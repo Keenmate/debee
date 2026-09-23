@@ -60,7 +60,7 @@ debee/
 ├── ai/                                    # AI context files (this folder)
 └── postgresql/                            # PostgreSQL tools
     ├── README.md                          # PostgreSQL overview & quick start
-    ├── CHANGELOG.md                       # Version history (1.0.0 → 3.2.0)
+    ├── CHANGELOG.md                       # Version history (current: v1.1.1)
     ├── debee.ps1                          # PowerShell orchestrator
     ├── debee.sh                           # Bash orchestrator
     ├── debee.py                           # Python orchestrator

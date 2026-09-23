@@ -143,8 +143,36 @@ DBPOSTUPDATESCRIPTS=hooks/post.sql
 
 The `restoreDatabase` operation supports multiple backup formats via `DBBACKUPTYPE`:
 
-| Format | Description |
-|--------|-------------|
-| `custom` | pg_dump custom archive format (`.dump`) |
-| `dir` | pg_dump directory format |
-| `file` | Plain SQL file |
+| Format | Description | Tool used |
+|--------|-------------|-----------|
+| `custom` | pg_dump custom archive format (`.dump`) — the default | `pg_restore -Fc` |
+| `dir` | pg_dump directory format | `pg_restore -Fd` |
+| `file` | Plain SQL file | `psql -f` |
+
+Two environment variables tune the restore:
+
+- `DBRESTOREJOBCOUNT` — number of parallel `pg_restore` jobs (`-j`), defaults to 1. Ignored for the `file` format.
+- `DBCREATEONRESTORE` — when `true`, `pg_restore` creates the database first (`-C`, connected via `DBCONNECTDB`) instead of restoring into the existing `DBDESTDB`.
+
+## Production Confirmation
+
+Set `DBPRODENVIRONMENT=true` in an environment file (e.g. `debee.prod.env`) to mark it as production. When set, debee prints a summary — host, port, user, target database, operations, and the SQL or migration range where applicable — and requires you to type `yes` (full word, case-insensitive) before **any** operation runs.
+
+```bash
+# Triggers the confirmation prompt
+./debee.sh -e prod -o fullService
+
+# Bypass the prompt for CI/automation
+./debee.sh -e prod -o fullService --yes
+.\debee.ps1 -Environment prod -Operations fullService -Yes
+```
+
+The confirmation banner prints regardless of `--silent`/`-q` — it is a safety gate, not orchestration chatter.
+
+## Silent Mode
+
+Pass `-q`/`--silent` (or `-Silent`/`-q` in PowerShell) to suppress orchestration scaffolding — env-file load messages, operation banners, and progress lines. Warnings, errors, and `psql`/`pg_restore` output remain visible, so piping `execSql --sql "..."` results no longer needs `2>/dev/null` tricks.
+
+```bash
+./debee.sh -o execSql --sql "SELECT version();" --silent
+```

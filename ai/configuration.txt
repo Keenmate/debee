@@ -23,6 +23,7 @@ Connection Settings:
   PGPORT                    PostgreSQL port                        Example: 5432
   PGUSER                    PostgreSQL user                        Example: postgres
   PGPASSWORD                PostgreSQL password                    Example: secret
+  PGDATABASE                Default libpq database (optional)      Example: postgres
   DBCONNECTDB               Admin database for connections         Example: postgres
   DBDESTDB                  Target database name                   Example: myapp_db
 
@@ -47,9 +48,14 @@ Backup/Restore:
   DBCREATEONRESTORE         Create database during restore         Values: true, false
 
 Version Table:
-  DBVERSIONTABLEFORMATS     Output formats (semicolon-sep)         Example: html;json;md;csv
-  DBVERSIONTABLEOUTPUTFOLDER  Output directory                     Example: .
-  DBVERSIONTABLEFILENAME    Base filename (no extension)           Example: db-objects
+  DBVERSIONTABLEFORMATS     Output formats (semicolon-sep)         Default: json;md
+  DBVERSIONTABLEOUTPUTFOLDER  Output directory                     Default: .
+  DBVERSIONTABLEFILENAME    Base filename (no extension)           Default: db-objects
+
+Safety:
+  DBPRODENVIRONMENT         true -> require typed 'yes' before      Values: true, false
+                            any operation runs (bypass with
+                            -y/--yes or -Yes)
 
 LOCAL OVERRIDES PATTERN
 -----------------------

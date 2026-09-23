@@ -5,6 +5,14 @@ All notable changes to the PostgreSQL database migration tools will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-09-23
+
+### Fixed
+- **`--llm` reference listed wrong `DBBACKUPTYPE` values**: The self-contained `--llm` reference document claimed `DBBACKUPTYPE` accepts `custom / plain / dir / tar`, but all three orchestrators only handle `custom` (default, `pg_restore -Fc`), `dir` (`pg_restore -Fd`), and `file` (`psql -f`) — any other value aborts with `Unknown backup type`. Corrected the two occurrences (operation summary and environment-variable list) to `custom / dir / file` in `debee.ps1`, `debee.sh`, and `debee.py`, keeping the `--llm` text byte-for-byte identical across all three. Version bumped to 1.1.1 in lockstep so the corrected reference is verifiable from `--version`.
+
+### Docs
+- **Documented flags and env vars added in 1.0.2–1.1.0**: The human-facing docs (`README.md`, `docs/configuration.md`, `docs/operations.md`, `docs/cross-platform.md`, `docs/version-table.md`) and the `ai/` context files had drifted behind the code. Added the `-q`/`--silent`, `-y`/`--yes`, `-V`/`--version`, `--test-verbose`, `-h`/`--help`, and `--llm` flags to every CLI reference; documented the `DBPRODENVIRONMENT` production-confirmation gate, silent mode, and the `DBCREATEONRESTORE`, `DBRESTOREJOBCOUNT`, `DBVERSIONTABLEFILENAME`, `DBVERSIONTABLEOUTPUTFOLDER`, and `PGDATABASE` environment variables. Corrected the `debee.ps1 -Operations` documentation (it has no default and shows help when omitted; only `debee.sh`/`debee.py` default to `fullService`). No behavioral change beyond the `--llm` text fix above.
+
 ## [1.1.0] - 2026-08-03
 
 ### Added

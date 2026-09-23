@@ -48,6 +48,7 @@ DBDESTDB → configuration.txt
 DBPGRESTOREFILE → configuration.txt
 DBPOSTUPDATESCRIPTS → configuration.txt, operations.txt
 DBPREUPDATESCRIPTS → configuration.txt, operations.txt
+DBPRODENVIRONMENT → configuration.txt, operations.txt
 DBPSQLFILE → configuration.txt
 DBRECREATESCRIPT → configuration.txt, operations.txt
 DBRESTOREJOBCOUNT → configuration.txt
@@ -86,6 +87,11 @@ J
 -
 JSON output → version-table.txt
 
+L
+-
+--llm → cross-platform.txt
+LLM reference → cross-platform.txt
+
 M
 -
 Main phase → testing.txt
@@ -116,6 +122,7 @@ postUpdateScripts → operations.txt
 PowerShell → cross-platform.txt
 preUpdateScripts → operations.txt
 prepareVersionTable → version-table.txt
+Production confirmation → operations.txt, configuration.txt
 Project structure → overview.txt
 psql → operations.txt, configuration.txt
 pg_restore → operations.txt, configuration.txt
@@ -130,6 +137,8 @@ runTests → testing.txt
 S
 -
 Shared setup → testing.txt
+--silent, -q → cross-platform.txt, operations.txt
+Silent mode → operations.txt
 --sql → cross-platform.txt, operations.txt
 --sql-file → cross-platform.txt, operations.txt
 Suite directories → testing.txt
@@ -140,6 +149,7 @@ test.json → testing.txt
 tests.json → testing.txt
 --test-filter → testing.txt, cross-platform.txt
 Test ordering → testing.txt
+--test-verbose → cross-platform.txt, testing.txt
 Transaction isolation → testing.txt
 
 U
@@ -148,8 +158,14 @@ updateDatabase → operations.txt
 
 V
 -
+--version, -V → cross-platform.txt
+Version flag → cross-platform.txt
 Version table → version-table.txt
 version_table_template.html → version-table.txt
+
+Y
+-
+--yes, -y → operations.txt, cross-platform.txt
 
 COMMON QUESTIONS
 ================

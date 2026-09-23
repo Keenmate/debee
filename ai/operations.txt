@@ -144,3 +144,22 @@ RECREATEDATABASE
 Executes YOUR recreation SQL script via psql.
 The DROP/CREATE DATABASE commands are in YOUR script, not in debee.
 Uses DBCONNECTDB for the admin connection.
+
+PRODUCTION CONFIRMATION
+-----------------------
+Set DBPRODENVIRONMENT=true in an env file (e.g. debee.prod.env) to mark it production.
+debee then prints a summary (host, port, user, target DB, operations, SQL/migration range)
+and requires you to type 'yes' (case-insensitive) before ANY operation runs.
+Bypass for CI/automation with -y/--yes (or -Yes in PowerShell).
+The banner prints even under --silent — it is a safety gate, not orchestration chatter.
+
+  ./debee.sh -e prod -o fullService          # prompts for confirmation
+  ./debee.sh -e prod -o fullService --yes    # bypasses the prompt
+
+SILENT MODE
+-----------
+-q/--silent (-Silent/-q in PowerShell) suppresses orchestration scaffolding —
+env-file load messages, operation banners, progress lines. Warnings, errors, and
+psql/pg_restore output remain, so execSql output pipes cleanly without 2>/dev/null.
+
+  ./debee.sh -o execSql --sql "SELECT version();" --silent

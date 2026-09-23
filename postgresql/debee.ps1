@@ -27,7 +27,7 @@ param (
 	[switch]$Help
 )
 
-$DebeeVersion = "1.1.0"
+$DebeeVersion = "1.1.1"
 
 function Show-DebeeHelp {
 	Write-Host ""
@@ -110,7 +110,7 @@ OPERATIONS  (comma-separated; default: fullService)
   recreateDatabase     Drop and recreate the target DB by running the SQL script in DBRECREATESCRIPT,
                        connected to DBCONNECTDB. Destructive.
   restoreDatabase      Restore the target DB from DBBACKUPFILE using pg_restore (or psql for plain
-                       SQL). Format set by DBBACKUPTYPE (custom/plain/dir/tar). Parallel jobs via
+                       SQL). Format set by DBBACKUPTYPE (custom/dir/file). Parallel jobs via
                        DBRESTOREJOBCOUNT. Optionally creates the DB first when DBCREATEONRESTORE=true.
   updateDatabase       Apply numbered migration files matching ^NNN_*.sql in the current directory,
                        ascending, within the [start..end] range. Empty files are skipped.
@@ -167,7 +167,7 @@ ENVIRONMENT VARIABLES
     DBRECREATESCRIPT      SQL file run by recreateDatabase
   Restore:
     DBBACKUPFILE          Path to the backup to restore
-    DBBACKUPTYPE          Backup format: custom (default) / plain / dir / tar
+    DBBACKUPTYPE          Backup format: custom (default) / dir / file
     DBRESTOREJOBCOUNT     Parallel pg_restore jobs (-j)
     DBCREATEONRESTORE     true -> create the DB before restoring
   Migrations:

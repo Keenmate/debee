@@ -43,14 +43,22 @@ All implementations also require PostgreSQL client tools (`psql`, `pg_restore`) 
 
 ```powershell
 .\debee.ps1
-  -Operations <string[]>        # Operations to run (default: fullService)
+  -Operations <string[]>        # Operations to run (omit to show help)
   [-Environment <string>]       # Environment name for config file selection
-  [-UpdateStartNumber <int>]    # First migration number (default: -1 = all)
-  [-UpdateEndNumber <int>]      # Last migration number (default: -1 = all)
+  [-UpdateStartNumber <int>]    # First migration number (default: env or -1 = all)
+  [-UpdateEndNumber <int>]      # Last migration number (default: env or -1 = all)
   [-SqlFile <string>]           # SQL file for execSql operation
   [-Sql <string>]               # Inline SQL for execSql operation
   [-TestFilter <string>]        # Test name filter for runTests (default: "all")
+  [-TestVerbose]                # Show all test output including PASS lines
+  [-Silent] [-q]                # Suppress orchestration messages
+  [-Yes] [-y]                   # Skip the production confirmation prompt
+  [-Version] [-V]               # Print version and exit
+  [-Help] [-h] [-?]             # Show help and exit
+  [-Llm]                        # Print full CLI reference for LLM/AI assistants
 ```
+
+> Unlike `debee.sh`/`debee.py`, `debee.ps1` has **no default operation** — running `.\debee.ps1` with no `-Operations` prints the help screen. Run `fullService` explicitly when you want the full pipeline.
 
 **Examples:**
 
@@ -69,12 +77,17 @@ All implementations also require PostgreSQL client tools (`psql`, `pg_restore`) 
 ./debee.sh [options]
   -o, --operations <ops>      # Comma-separated operations (default: fullService)
   -e, --environment <env>     # Environment name for config file selection
-  -s, --start-number <num>    # First migration number (default: -1 = all)
-  -n, --end-number <num>      # Last migration number (default: -1 = all)
+  -s, --start-number <num>    # First migration number (default: env or -1 = all)
+  -n, --end-number <num>      # Last migration number (default: env or -1 = all)
       --sql-file <file>       # SQL file for execSql operation
       --sql <query>           # Inline SQL for execSql operation
       --test-filter <pattern> # Test name filter for runTests (default: "all")
+      --test-verbose          # Show all test output including PASS lines
+  -q, --silent                # Suppress orchestration messages
+  -y, --yes                   # Skip the production confirmation prompt
+  -V, --version               # Print version and exit
   -h, --help                  # Show help message
+      --llm                   # Print full CLI reference for LLM/AI assistants
 ```
 
 **Examples:**
@@ -94,12 +107,17 @@ All implementations also require PostgreSQL client tools (`psql`, `pg_restore`) 
 python debee.py [options]
   -o, --operations <ops>      # Comma-separated operations (default: fullService)
   -e, --environment <env>     # Environment name for config file selection
-  -s, --start-number <num>    # First migration number (default: -1 = all)
-  -n, --end-number <num>      # Last migration number (default: -1 = all)
+  -s, --start-number <num>    # First migration number (default: env or -1 = all)
+  -n, --end-number <num>      # Last migration number (default: env or -1 = all)
       --sql-file <file>       # SQL file for execSql operation
       --sql <query>           # Inline SQL for execSql operation
       --test-filter <pattern> # Test name filter for runTests (default: "all")
+      --test-verbose          # Show all test output including PASS lines
+  -q, --silent                # Suppress orchestration messages
+  -y, --yes                   # Skip the production confirmation prompt
+  -V, --version               # Print version and exit
       --no-color              # Disable colored output (for CI/CD)
+      --llm                   # Print full CLI reference for LLM/AI assistants
 ```
 
 **Examples:**
@@ -113,6 +131,21 @@ python debee.py -o runTests --test-filter connectivity
 python debee.py -e staging -o updateDatabase
 python debee.py -o updateDatabase --no-color
 ```
+
+## Utility Flags
+
+These flags behave identically across all three implementations:
+
+| Flag (sh/py) | Flag (ps1) | Purpose |
+|--------------|-----------|---------|
+| `-q`, `--silent` | `-Silent`, `-q` | Suppress orchestration messages (env load, banners, progress). Errors and psql output remain. |
+| `-y`, `--yes` | `-Yes`, `-y` | Skip the `DBPRODENVIRONMENT` confirmation prompt (for CI/automation). |
+| `--test-verbose` | `-TestVerbose` | Show all test output, including PASS lines (see [Testing](testing.md)). |
+| `-V`, `--version` | `-Version`, `-V` | Print the orchestrator version (`1.1.1`) and exit. |
+| `-h`, `--help` | `-Help`, `-h`, `-?` | Show the help screen and exit. |
+| `--llm` | `-Llm` | Print a single self-contained CLI reference designed to be pasted into an LLM/AI assistant, then exit. |
+
+The `--llm` output is byte-for-byte identical across `debee.ps1`, `debee.sh`, and `debee.py`.
 
 ## Valid Operations
 

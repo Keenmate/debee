@@ -15,7 +15,7 @@ python debee.py -o prepareVersionTable
 
 ## Output Formats
 
-Configure which formats to generate via the `DBVERSIONTABLEFORMATS` environment variable (semicolon-separated):
+Configure which formats to generate via the `DBVERSIONTABLEFORMATS` environment variable (semicolon-separated). When unset, debee generates `json;md`:
 
 ```bash
 DBVERSIONTABLEFORMATS=html;json;md;csv
@@ -32,7 +32,9 @@ DBVERSIONTABLEFORMATS=html;json;md;csv
 
 | Variable | Purpose | Example |
 |----------|---------|---------|
-| `DBVERSIONTABLEFORMATS` | Output formats to generate | `html;json;md` |
+| `DBVERSIONTABLEFORMATS` | Output formats to generate (default `json;md`) | `html;json;md` |
+| `DBVERSIONTABLEOUTPUTFOLDER` | Directory for output files (default `.`) | `docs/` |
+| `DBVERSIONTABLEFILENAME` | Base output filename without extension (default `db-objects`) | `db-objects` |
 | `DBADHOCDIRECTORY` | Ad-hoc scripts to include in tracking | `ad-hoc-scripts/` |
 
 ## What Gets Tracked

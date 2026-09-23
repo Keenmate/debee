@@ -32,6 +32,8 @@ Debee **does** read configuration, execute your SQL scripts in order, call Postg
 - **Version table** — track every database object across migrations with JSON, Markdown, CSV, or interactive HTML output
 - **Cross-platform** — PowerShell, Bash, and Python implementations with identical interfaces
 - **Configuration-driven** — everything controlled through `.env` files with environment-specific overrides
+- **Production safety** — mark an env file with `DBPRODENVIRONMENT=true` to require a typed `yes` before anything runs; bypass with `-y`/`--yes` in CI
+- **Silent mode** — `-q`/`--silent` suppresses orchestration chatter so `execSql` output pipes cleanly
 - **LLM reference** — `--llm` (`-Llm` in PowerShell) prints a single self-contained CLI reference for pasting into AI assistants
 
 ## Quick Start

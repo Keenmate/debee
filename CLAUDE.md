@@ -37,6 +37,8 @@ Examples:
 - `preUpdateScripts` - Run pre-migration scripts
 - `postUpdateScripts` - Run post-migration scripts
 - `prepareVersionTable` - Generate database object documentation
+- `execSql` - Execute a SQL file, inline SQL, or open interactive psql
+- `runTests` - Run SQL test files and suites
 - `fullService` - Run all operations in sequence
 
 ### Environment Configuration

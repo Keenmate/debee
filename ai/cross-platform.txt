@@ -35,13 +35,22 @@ All also require: psql, pg_restore, Python 3.6+ (for extract-db-objects.py)
 CLI REFERENCE — POWERSHELL (debee.ps1)
 --------------------------------------
 .\debee.ps1
-  -Operations <string[]>        # Operations to run (default: fullService)
+  -Operations <string[]>        # Operations to run (omit -> show help)
   [-Environment <string>]       # Environment name for config file
-  [-UpdateStartNumber <int>]    # First migration number (default: -1 = all)
-  [-UpdateEndNumber <int>]      # Last migration number (default: -1 = all)
+  [-UpdateStartNumber <int>]    # First migration number (default: env or -1 = all)
+  [-UpdateEndNumber <int>]      # Last migration number (default: env or -1 = all)
   [-SqlFile <string>]           # SQL file for execSql
   [-Sql <string>]               # Inline SQL for execSql
   [-TestFilter <string>]        # Test filter for runTests (default: "all")
+  [-TestVerbose]                # Show all test output including PASS lines
+  [-Silent] [-q]                # Suppress orchestration messages
+  [-Yes] [-y]                   # Skip the production confirmation prompt
+  [-Version] [-V]               # Print version and exit
+  [-Help] [-h] [-?]             # Show help and exit
+  [-Llm]                        # Print full CLI reference for LLM/AI assistants
+
+NOTE: debee.ps1 has NO default operation — running it with no -Operations
+prints the help screen. debee.sh and debee.py default to fullService.
 
 Examples:
   .\debee.ps1 -Operations fullService
@@ -57,12 +66,17 @@ CLI REFERENCE — BASH (debee.sh)
 ./debee.sh [options]
   -o, --operations <ops>      # Comma-separated operations (default: fullService)
   -e, --environment <env>     # Environment name for config file
-  -s, --start-number <num>    # First migration number (default: -1 = all)
-  -n, --end-number <num>      # Last migration number (default: -1 = all)
+  -s, --start-number <num>    # First migration number (default: env or -1 = all)
+  -n, --end-number <num>      # Last migration number (default: env or -1 = all)
       --sql-file <file>       # SQL file for execSql
       --sql <query>           # Inline SQL for execSql
       --test-filter <pattern> # Test filter for runTests (default: "all")
+      --test-verbose          # Show all test output including PASS lines
+  -q, --silent                # Suppress orchestration messages
+  -y, --yes                   # Skip the production confirmation prompt
+  -V, --version               # Print version and exit
   -h, --help                  # Show help
+      --llm                   # Print full CLI reference for LLM/AI assistants
 
 Examples:
   ./debee.sh -o fullService
@@ -78,12 +92,17 @@ CLI REFERENCE — PYTHON (debee.py)
 python debee.py [options]
   -o, --operations <ops>      # Comma-separated operations (default: fullService)
   -e, --environment <env>     # Environment name for config file
-  -s, --start-number <num>    # First migration number (default: -1 = all)
-  -n, --end-number <num>      # Last migration number (default: -1 = all)
+  -s, --start-number <num>    # First migration number (default: env or -1 = all)
+  -n, --end-number <num>      # Last migration number (default: env or -1 = all)
       --sql-file <file>       # SQL file for execSql
       --sql <query>           # Inline SQL for execSql
       --test-filter <pattern> # Test filter for runTests (default: "all")
+      --test-verbose          # Show all test output including PASS lines
+  -q, --silent                # Suppress orchestration messages
+  -y, --yes                   # Skip the production confirmation prompt
+  -V, --version               # Print version and exit
       --no-color              # Disable colored output (for CI/CD)
+      --llm                   # Print full CLI reference for LLM/AI assistants
 
 Examples:
   python debee.py -o fullService
@@ -94,6 +113,18 @@ Examples:
   python debee.py -o runTests --test-filter connectivity
   python debee.py -e staging -o updateDatabase
   python debee.py -o updateDatabase --no-color
+
+UTILITY FLAGS (IDENTICAL ACROSS ALL THREE)
+------------------------------------------
+sh/py             ps1                 Purpose
+-q, --silent      -Silent, -q         Suppress orchestration messages (errors/psql output remain)
+-y, --yes         -Yes, -y            Skip DBPRODENVIRONMENT confirmation prompt (CI/automation)
+--test-verbose    -TestVerbose        Show all test output including PASS lines
+-V, --version     -Version, -V        Print version (1.1.1) and exit
+-h, --help        -Help, -h, -?       Show help and exit
+--llm             -Llm                Print self-contained CLI reference for LLM/AI assistants
+
+The --llm output is byte-for-byte identical across debee.ps1, debee.sh, debee.py.
 
 VALID OPERATIONS (ALL IMPLEMENTATIONS)
 --------------------------------------
