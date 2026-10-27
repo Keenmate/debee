@@ -27,7 +27,7 @@ param (
 	[switch]$Help
 )
 
-$DebeeVersion = "1.1.1"
+$DebeeVersion = "1.1.2"
 
 function Show-DebeeHelp {
 	Write-Host ""

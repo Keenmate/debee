@@ -49,6 +49,70 @@ def get_sql_files() -> List[Path]:
 
     return sorted(sql_files, key=sort_key)
 
+# First words of multi-word type names - an argument starting with one has no name
+MULTI_WORD_TYPE_STARTS = {'double', 'character', 'char', 'bit', 'timestamp', 'time', 'interval', 'national'}
+
+TYPE_ALIASES = {
+    'int': 'integer', 'int4': 'integer', 'int8': 'bigint', 'int2': 'smallint',
+    'bool': 'boolean', 'varchar': 'character varying', 'float8': 'double precision',
+    'float4': 'real', 'timestamptz': 'timestamp with time zone', 'decimal': 'numeric',
+}
+
+def normalize_arg_type(arg: str, object_type: str) -> str:
+    """Reduce a routine argument declaration to its type, or '' if it isn't part of the identity."""
+    # Strip default value
+    arg = re.split(r'\s+DEFAULT\s+|\s*=\s*', arg, maxsplit=1, flags=re.IGNORECASE)[0]
+    tokens = arg.split()
+    if not tokens:
+        return ''
+
+    mode = tokens[0].upper()
+    if mode in ('IN', 'OUT', 'INOUT', 'VARIADIC'):
+        tokens = tokens[1:]
+        # OUT arguments are not part of a function's identity
+        if mode == 'OUT' and object_type == 'function':
+            return ''
+
+    # Drop the argument name, if present
+    if len(tokens) > 1 and tokens[0].lower() not in MULTI_WORD_TYPE_STARTS:
+        tokens = tokens[1:]
+
+    type_name = re.sub(r'\s*\(.*?\)', '', ' '.join(tokens).lower())  # typmods don't matter
+    type_name = re.sub(r'^pg_catalog\.', '', type_name)
+    return TYPE_ALIASES.get(type_name, type_name)
+
+def parse_routine_signature(text: str, object_type: str):
+    """Parse the argument list starting at text (e.g. '(_a text, _b int default 1) returns ...').
+
+    Returns a tuple of argument types, or None when there is no argument list.
+    """
+    text = re.sub(r'--[^\n]*', '', text).lstrip()
+    if not text.startswith('('):
+        return None
+
+    depth = 0
+    args, current = [], ''
+    for ch in text:
+        if ch == '(':
+            depth += 1
+            if depth == 1:
+                continue
+        elif ch == ')':
+            depth -= 1
+            if depth == 0:
+                args.append(current)
+                break
+        elif ch == ',' and depth == 1:
+            args.append(current)
+            current = ''
+            continue
+        current += ch
+    else:
+        return None  # unbalanced parentheses
+
+    types = (normalize_arg_type(arg, object_type) for arg in args)
+    return tuple(t for t in types if t)
+
 def parse_sql_objects(content: str, filename: str) -> List[Dict[str, Any]]:
     """Parse SQL content to extract database objects."""
     objects = []
@@ -120,11 +184,19 @@ def parse_sql_objects(content: str, filename: str) -> List[Dict[str, Any]]:
                         schema = 'public'
                         name = object_name
 
+                    # Functions/procedures are overloadable - track the argument
+                    # signature so a DROP of one overload doesn't hide the others
+                    signature = None
+                    if object_type in ('function', 'procedure'):
+                        rest = '\n'.join([line[match.end(2):]] + lines[line_num:])
+                        signature = parse_routine_signature(rest, object_type)
+
                     objects.append({
                         'schema': schema,
                         'object_name': name,
                         'object_type': object_type,
                         'operation': operation,
+                        'signature': signature,
                         'file': filename,
                         'line': line_num,
                         'full_line': line
@@ -197,10 +269,27 @@ def process_files() -> Dict[str, Dict[str, Any]]:
             })
 
             # Update latest reference
-            all_objects[key]['last_update_file'] = obj['file']
-            all_objects[key]['last_update_line'] = obj['line']
-            all_objects[key]['last_update_operation'] = obj['operation']
-            all_objects[key]['last_update_source'] = source_type
+            last = (obj['file'], obj['line'], obj['operation'], source_type)
+
+            if obj['object_type'] in ('function', 'procedure'):
+                # Live overloads: signature -> last definition (most recent last)
+                live = all_objects[key].setdefault('live_overloads', {})
+                signature = obj['signature']
+                if obj['operation'] != 'DROP':
+                    live.pop(signature, None)
+                    live[signature] = last
+                elif signature is None:
+                    live.clear()
+                else:
+                    live.pop(signature, None)
+                    if live:
+                        # Other overloads survive - keep pointing at the latest one
+                        last = next(reversed(live.values()))
+
+            (all_objects[key]['last_update_file'],
+             all_objects[key]['last_update_line'],
+             all_objects[key]['last_update_operation'],
+             all_objects[key]['last_update_source']) = last
 
     return all_objects
 

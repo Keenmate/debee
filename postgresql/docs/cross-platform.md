@@ -141,7 +141,7 @@ These flags behave identically across all three implementations:
 | `-q`, `--silent` | `-Silent`, `-q` | Suppress orchestration messages (env load, banners, progress). Errors and psql output remain. |
 | `-y`, `--yes` | `-Yes`, `-y` | Skip the `DBPRODENVIRONMENT` confirmation prompt (for CI/automation). |
 | `--test-verbose` | `-TestVerbose` | Show all test output, including PASS lines (see [Testing](testing.md)). |
-| `-V`, `--version` | `-Version`, `-V` | Print the orchestrator version (`1.1.1`) and exit. |
+| `-V`, `--version` | `-Version`, `-V` | Print the orchestrator version (`1.1.2`) and exit. |
 | `-h`, `--help` | `-Help`, `-h`, `-?` | Show the help screen and exit. |
 | `--llm` | `-Llm` | Print a single self-contained CLI reference designed to be pasted into an LLM/AI assistant, then exit. |
 

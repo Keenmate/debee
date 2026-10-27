@@ -120,7 +120,7 @@ sh/py             ps1                 Purpose
 -q, --silent      -Silent, -q         Suppress orchestration messages (errors/psql output remain)
 -y, --yes         -Yes, -y            Skip DBPRODENVIRONMENT confirmation prompt (CI/automation)
 --test-verbose    -TestVerbose        Show all test output including PASS lines
--V, --version     -Version, -V        Print version (1.1.1) and exit
+-V, --version     -Version, -V        Print version (1.1.2) and exit
 -h, --help        -Help, -h, -?       Show help and exit
 --llm             -Llm                Print self-contained CLI reference for LLM/AI assistants
 

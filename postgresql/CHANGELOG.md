@@ -5,6 +5,11 @@ All notable changes to the PostgreSQL database migration tools will be documente
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.2] - 2026-10-27
+
+### Fixed
+- **`extract-db-objects.py` reported an overload drop as a routine's latest version**: Objects are keyed by schema + name + type, so a `DROP FUNCTION f(text, text)` that removed only one overload became the function's "last update", pointing the version table at the drop instead of the surviving definition (seen with `public.check_version` in postgresql-permissions-model: 049's drop of the old 002 overload masked the real definition in 018). Functions and procedures now track live overloads by normalized argument types (names, defaults, typmods, and function `OUT` args ignored; common aliases like `int`/`bool` unified). A signature-specific DROP points the last update at the most recent surviving overload, or at the DROP when none remain. A DROP without an argument list still counts as dropping everything. The full update history is unchanged.
+
 ## [1.1.1] - 2026-09-23
 
 ### Fixed
